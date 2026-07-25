@@ -220,7 +220,7 @@ The project is ready for Vercel deployment.
 
 The included `vercel.json` file allows React Router routes to work after deployment.
 
-Live URL: Not deployed yet.
+Live URL: [https://inventory-management-system-murex-rho.vercel.app](https://inventory-management-system-murex-rho.vercel.app)
 
 ## Known Limitations
 

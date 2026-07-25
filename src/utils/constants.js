@@ -16,3 +16,20 @@ export const DEFAULT_CATEGORY_NAMES = [
 export const MAX_PRICE = 100_000_000
 export const MAX_STOCK = 10_000_000
 export const MAX_ADJUSTMENT = 1_000_000
+
+export const CUSTOM_STOCK_REASON = 'Other'
+
+export const STOCK_ADJUSTMENT_REASONS = {
+  increase: [
+    'Supplier delivery',
+    'Customer return',
+    'Inventory correction',
+    CUSTOM_STOCK_REASON,
+  ],
+  decrease: [
+    'Customer sale',
+    'Damaged stock',
+    'Inventory correction',
+    CUSTOM_STOCK_REASON,
+  ],
+}

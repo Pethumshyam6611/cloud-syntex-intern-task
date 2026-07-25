@@ -209,12 +209,6 @@ export function InventoryProvider({ children }) {
       clearStockHistory() {
         dispatch({ type: INVENTORY_ACTIONS.CLEAR_STOCK_HISTORY })
       },
-      loadDemoData(products, stockHistory = []) {
-        dispatch({
-          type: INVENTORY_ACTIONS.LOAD_DEMO_DATA,
-          payload: { products, stockHistory },
-        })
-      },
     }),
     [state.categories, state.products],
   )

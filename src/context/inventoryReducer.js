@@ -11,7 +11,6 @@ export const INVENTORY_ACTIONS = {
   BULK_DELETE_PRODUCTS: 'BULK_DELETE_PRODUCTS',
   BULK_RESTOCK_PRODUCTS: 'BULK_RESTOCK_PRODUCTS',
   CLEAR_STOCK_HISTORY: 'CLEAR_STOCK_HISTORY',
-  LOAD_DEMO_DATA: 'LOAD_DEMO_DATA',
 }
 
 export function inventoryReducer(state, action) {
@@ -91,12 +90,6 @@ export function inventoryReducer(state, action) {
     }
     case INVENTORY_ACTIONS.CLEAR_STOCK_HISTORY:
       return { ...state, stockHistory: [] }
-    case INVENTORY_ACTIONS.LOAD_DEMO_DATA:
-      return {
-        ...state,
-        products: action.payload.products,
-        stockHistory: action.payload.stockHistory,
-      }
     default:
       return state
   }

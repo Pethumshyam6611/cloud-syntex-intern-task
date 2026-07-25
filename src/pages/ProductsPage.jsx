@@ -9,7 +9,6 @@ import {
   Typography,
 } from '@mui/material'
 import AddRounded from '@mui/icons-material/AddRounded'
-import DatasetRounded from '@mui/icons-material/DatasetRounded'
 import DeleteOutlineRounded from '@mui/icons-material/DeleteOutlineRounded'
 import DownloadRounded from '@mui/icons-material/DownloadRounded'
 import InventoryRounded from '@mui/icons-material/InventoryRounded'
@@ -26,7 +25,6 @@ import EmptyState from '../components/common/EmptyState'
 import PageHeader from '../components/common/PageHeader'
 import { useInventory } from '../hooks/useInventory'
 import { downloadProductsCsv } from '../utils/csv'
-import { createDemoProducts } from '../utils/demoData'
 import { generateUniqueSku } from '../utils/sku'
 import { getStockStatus } from '../utils/stock'
 
@@ -49,13 +47,8 @@ const defaultProductFilters = {
 }
 
 export default function ProductsPage() {
-  const {
-    products,
-    categories,
-    deleteProduct,
-    bulkDeleteProducts,
-    loadDemoData,
-  } = useInventory()
+  const { products, categories, deleteProduct, bulkDeleteProducts } =
+    useInventory()
   const [filters, setFilters] = useState(defaultProductFilters)
   const [selectedIds, setSelectedIds] = useState(() => new Set())
   const [formState, setFormState] = useState({
@@ -67,7 +60,6 @@ export default function ProductsPage() {
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false)
   const [bulkRestockOpen, setBulkRestockOpen] = useState(false)
-  const [demoConfirmOpen, setDemoConfirmOpen] = useState(false)
 
   const filteredProducts = useMemo(() => {
     const normalizedSearch = filters.search.trim().toLowerCase()
@@ -148,17 +140,6 @@ export default function ProductsPage() {
     setBulkDeleteOpen(false)
   }
 
-  const confirmLoadDemo = () => {
-    if (categories.length === 0) {
-      toast.error('Create at least one category before loading demo data.')
-      setDemoConfirmOpen(false)
-      return
-    }
-    loadDemoData(createDemoProducts(categories))
-    toast.success('Demo inventory loaded.')
-    setDemoConfirmOpen(false)
-  }
-
   const exportProducts = () => {
     downloadProductsCsv(filteredProducts, categories)
     toast.success(
@@ -180,15 +161,6 @@ export default function ProductsPage() {
         description="Search the catalog, make safe stock changes, and export exactly what you see."
         actions={
           <>
-            {products.length === 0 && (
-              <Button
-                variant="outlined"
-                startIcon={<DatasetRounded />}
-                onClick={() => setDemoConfirmOpen(true)}
-              >
-                Load demo data
-              </Button>
-            )}
             <Button
               variant="outlined"
               startIcon={<DownloadRounded />}
@@ -292,7 +264,7 @@ export default function ProductsPage() {
           <Box sx={{ p: { xs: 2, sm: 3 } }}>
             <EmptyState
               title="Your inventory is ready for its first product"
-              description="Add a real product now, or load optional demo data to explore every workflow."
+              description="Add your first product to start tracking inventory and stock activity."
               actionLabel="Add product"
               onAction={openAddProduct}
             />
@@ -377,15 +349,6 @@ export default function ProductsPage() {
         confirmLabel="Delete selected"
         onClose={() => setBulkDeleteOpen(false)}
         onConfirm={confirmBulkDelete}
-      />
-      <ConfirmDialog
-        open={demoConfirmOpen}
-        title="Load demo inventory?"
-        description="Six sample products will be added so you can explore filters, stock statuses, charts, and bulk actions. Existing inventory will never be replaced."
-        confirmLabel="Load demo data"
-        confirmColor="primary"
-        onClose={() => setDemoConfirmOpen(false)}
-        onConfirm={confirmLoadDemo}
       />
     </>
   )

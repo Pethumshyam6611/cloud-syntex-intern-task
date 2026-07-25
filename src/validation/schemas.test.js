@@ -72,8 +72,20 @@ describe('stock adjustment validation', () => {
       createStockAdjustmentSchema(1).validate({
         operation: 'decrease',
         quantity: 2,
-        reason: 'Customer order',
+        reason: 'Customer sale',
+        note: '',
       }),
-    ).rejects.toThrow('Only 1 units are available.')
+    ).rejects.toThrow('Only 1 unit is available.')
+  })
+
+  it('requires details when the custom reason is selected', async () => {
+    await expect(
+      createStockAdjustmentSchema(5).validate({
+        operation: 'increase',
+        quantity: 2,
+        reason: 'Other',
+        note: '',
+      }),
+    ).rejects.toThrow('Enter a reason for this adjustment.')
   })
 })

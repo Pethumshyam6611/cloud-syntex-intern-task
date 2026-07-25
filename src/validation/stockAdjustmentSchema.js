@@ -1,7 +1,20 @@
 import * as Yup from 'yup'
-import { MAX_ADJUSTMENT, MAX_STOCK } from '../utils/constants'
+import {
+  CUSTOM_STOCK_REASON,
+  MAX_ADJUSTMENT,
+  MAX_STOCK,
+  STOCK_ADJUSTMENT_REASONS,
+} from '../utils/constants'
+
+const allowedReasons = [
+  ...new Set(Object.values(STOCK_ADJUSTMENT_REASONS).flat()),
+]
 
 export function createStockAdjustmentSchema(currentQuantity) {
+  const availableStockMessage = `Only ${currentQuantity.toLocaleString()} ${
+    currentQuantity === 1 ? 'unit is' : 'units are'
+  } available.`
+
   return Yup.object({
     operation: Yup.string()
       .oneOf(['increase', 'decrease'], 'Choose an operation.')
@@ -20,7 +33,7 @@ export function createStockAdjustmentSchema(currentQuantity) {
       )
       .test(
         'available-stock',
-        `Only ${currentQuantity.toLocaleString()} units are available.`,
+        availableStockMessage,
         function validateAvailableStock(value) {
           if (this.parent.operation !== 'decrease' || value === undefined) {
             return true
@@ -39,9 +52,17 @@ export function createStockAdjustmentSchema(currentQuantity) {
         },
       ),
     reason: Yup.string()
+      .oneOf(allowedReasons, 'Choose a valid reason.')
+      .required('Reason is required.'),
+    note: Yup.string()
       .trim()
-      .required('Reason is required.')
-      .min(3, 'Reason must be at least 3 characters.')
-      .max(150, 'Reason cannot exceed 150 characters.'),
+      .max(100, 'Note cannot exceed 100 characters.')
+      .when('reason', {
+        is: CUSTOM_STOCK_REASON,
+        then: (schema) =>
+          schema
+            .required('Enter a reason for this adjustment.')
+            .min(3, 'Reason must be at least 3 characters.'),
+      }),
   })
 }
